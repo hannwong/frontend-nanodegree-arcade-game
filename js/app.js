@@ -17,23 +17,40 @@ Entity.prototype.render = function() {
 // Enemies our player must avoid
 var Enemy = function() {
     Entity.call(this);
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+
+    // Indicates the enemy is off the screen.
+    this.xMax = this.xGridStart + 5 * this.xGridStep;
+    this.xMin = 0 - this.xGridStep;
+
+    this.randomize();
 };
 
 Enemy.prototype = Object.create(Entity.prototype);
 Enemy.prototype.constructor = Enemy;
 
 // Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+// Parameter: dt, a time delta between ticks (unit: second)
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x += dt * this.speed;
+    if (this.x > this.xMax) {
+        this.randomize();
+    }
+};
+
+// Also resets enemy when it has completed its journey.
+Enemy.prototype.randomize = function() {
+    this.speed = getRandomIntInclusive(100, 300); // Pixels per second.
+    this.row = getRandomIntInclusive(0, 2);
+
+    this.y = this.yGridStart + this.yGridStep * this.row;
+    this.x = this.xMin;
 };
 
 // Now write your own player class
@@ -80,7 +97,7 @@ Player.prototype.handleInput = function(key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [];
+var allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 var player = new Player(2, 4);
 
 // This listens for key presses and sends the keys to your
@@ -95,3 +112,9 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}

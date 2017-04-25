@@ -118,7 +118,7 @@ Player.prototype.handleInput = function(key) {
         this.y -= this.yGridStep;
         if (this.y < this.yGridStart) {
             // Game is won!
-            player.won = true;
+            this.won = true;
         }
         break;
     case 'down':

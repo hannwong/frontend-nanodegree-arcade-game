@@ -98,6 +98,8 @@ Player.prototype.constructor = Player;
 Player.prototype.init = function() {
     this.x = this.xGridStart + this.xGridStep * 2;
     this.y = this.yGridStart + this.yGridStep * 4;
+
+    this.won = false;
 };
 
 Player.prototype.update = function() { };
@@ -114,7 +116,10 @@ Player.prototype.handleInput = function(key) {
         break;
     case 'up':
         this.y -= this.yGridStep;
-        if (this.y < this.yGridStart) this.y = this.yGridStart;
+        if (this.y < this.yGridStart) {
+            // Game is won!
+            player.won = true;
+        }
         break;
     case 'down':
         this.y += this.yGridStep;

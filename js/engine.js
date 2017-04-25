@@ -80,7 +80,32 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
+    }
+
+    function checkCollisions() {
+        var playerBox = player.getBoundBox();
+        var playerLeftX = playerBox.x,
+            playerRightX = playerBox.x + playerBox.width,
+            playerTopY = playerBox.y,
+            playerBottomY = playerBox.y + playerBox.height;
+
+        allEnemies.forEach(function(enemy) {
+            var enemyBox = enemy.getBoundBox();
+            var leftX = enemyBox.x,
+                rightX = enemyBox.x + enemyBox.width,
+                topY = enemyBox.y,
+                bottomY = enemyBox.y + enemyBox.height;
+
+            if (((leftX >= playerLeftX && leftX <= playerRightX) ||
+                 (rightX >= playerLeftX && rightX <= playerRightX))
+                &&
+                ((topY >= playerTopY && topY <= playerBottomY) ||
+                 (bottomY >= playerTopY && bottomY <= playerBottomY)))
+            {
+                reset();
+            }
+        });
     }
 
     /* This is called by the update function and loops through all of the
@@ -159,7 +184,11 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        allEnemies.forEach(function(enemy) {
+            enemy.init();
+        });
+
+        player.init();
     }
 
     /* Go ahead and load all of the images we know we're going to need to
